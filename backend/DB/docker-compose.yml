@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  catalog_db_server:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: kira
+      MONGO_INITDB_ROOT_PASSWORD: sai123pol
+
+    volumes:
+      - ./db-data/catalog_db_server/:/data/db
