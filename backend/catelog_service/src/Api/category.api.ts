@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import categoryService from "../Service/category.service";
+import categoryService from "../services/category.service";
 import Category from "../interface/category/category.interface";
 import { plainToClass } from "class-transformer";
 import RequestBodyValidation from "../util/RequestBodyValidation";

@@ -9,7 +9,7 @@ export default async function RequestBodyValidation<T>(input: any) {
   const error = await validate(input, {
     ValidationError: { target: true },
   });
-  console.log(input);
+
   if (error.length) {
     const ErrorField = Object.keys(error[0].constraints!);
     throw new ValidationError(error[0].constraints![ErrorField[0]]);

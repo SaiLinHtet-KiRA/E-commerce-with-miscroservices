@@ -2,11 +2,13 @@ import express, { NextFunction, Request, Response } from "express";
 import RequestBodyValidation from "../util/RequestBodyValidation";
 import { plainToClass } from "class-transformer";
 import Product from "../interface/product/product.interface";
-import ProductService from "../Service/product.service";
+import ProductService from "../services/product.service";
 import formidable from "express-formidable";
+import MessageBroker from "../server/MessageBroker";
 
 const productService = new ProductService();
 const router = express.Router();
+const Rpc = new MessageBroker();
 
 router.post(
   "/product",
@@ -20,6 +22,8 @@ router.post(
       const body = await RequestBodyValidation<Product>(
         plainToClass(Product, request.fields)
       );
+      const req = await Rpc.RPCRequest("scoket", "requesd data");
+      console.log(req);
       // await productService.createProduct(body);
       response.status(200).json("Product successfully created");
     } catch (error) {

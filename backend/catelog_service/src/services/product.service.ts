@@ -15,7 +15,7 @@ export default class productService implements productServiceInterface {
       data.images[0] = "image string";
       data.images[1] = "image string2";
 
-      await this.repo.create(data);
+      // await this.repo.create(data);
     } catch (error) {
       throw new NotFoundError("Products can't create");
     }
