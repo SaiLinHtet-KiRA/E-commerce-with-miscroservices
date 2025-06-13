@@ -3,20 +3,30 @@ import Product from "../interface/product/product.interface";
 import productServiceInterface from "../interface/product/products.service.interface";
 import productsRepository from "../repository/products.repository";
 import { NotFoundError, ValidationError } from "../util/error/errors";
+import MessageBroker from "../server/MessageBroker";
 
 export default class productService implements productServiceInterface {
   repo: productsRepository;
-  constructor() {
+
+  constructor(private msgBoker: MessageBroker) {
     this.repo = new productsRepository();
   }
   async createProduct(data: Omit<Product, "id">): Promise<void> {
     try {
       data.ReviewCollection = "ReviewString";
+      data.images = [];
       data.images[0] = "image string";
       data.images[1] = "image string2";
-
-      // await this.repo.create(data);
+      data.ReviewCollection = await this.msgBoker.RPCRequest<string>(
+        "scoketServer",
+        {
+          data: "",
+          toServer: "createReviews",
+        }
+      );
+      await this.repo.create(data);
     } catch (error) {
+      console.log(error);
       throw new NotFoundError("Products can't create");
     }
   }

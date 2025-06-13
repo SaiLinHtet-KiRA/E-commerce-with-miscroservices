@@ -6,9 +6,10 @@ import ProductService from "../services/product.service";
 import formidable from "express-formidable";
 import MessageBroker from "../server/MessageBroker";
 
-const productService = new ProductService();
 const router = express.Router();
-const Rpc = new MessageBroker();
+
+const msgBroker = new MessageBroker();
+const productService = new ProductService(msgBroker);
 
 router.post(
   "/product",
@@ -22,9 +23,8 @@ router.post(
       const body = await RequestBodyValidation<Product>(
         plainToClass(Product, request.fields)
       );
-      const req = await Rpc.RPCRequest("scoket", "requesd data");
-      console.log(req);
-      // await productService.createProduct(body);
+
+      await productService.createProduct(body);
       response.status(200).json("Product successfully created");
     } catch (error) {
       next(error);

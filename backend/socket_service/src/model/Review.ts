@@ -1,8 +1,9 @@
 import mongoose, { Schema, Types } from "mongoose";
+import Reviews from "../interface/Review/Reviews.interface";
 
 const ReviewSchema = new Schema(
   {
-    userID: { type: Types.ObjectId },
+    userID: { type: Number, require: [true, "UserID is Required"] },
     text: {
       type: String,
       required: [true, "Rating is required"],
@@ -18,9 +19,8 @@ const ReviewSchema = new Schema(
 );
 
 const ReviewsSchema = new Schema({
-  reviews: [ReviewSchema],
+  reviews: { type: [ReviewSchema], default: [] },
 });
 
-const Reviews =
-  mongoose.models.Review || mongoose.model("Review", ReviewSchema);
+const Reviews = mongoose.model<Reviews>("Review", ReviewsSchema);
 export default Reviews;

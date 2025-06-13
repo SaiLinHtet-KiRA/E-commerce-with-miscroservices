@@ -1,13 +1,22 @@
+import { error } from "console";
 import ReviewRespositoryInterface from "../interface/Review/Review.respository.interface";
 import ReviewInput from "../model/dto/ReviewInput.dto";
 import Reviews from "../model/Review";
 
 export class ReviewRespository implements ReviewRespositoryInterface {
-  async create(): Promise<void> {
-    await Reviews.create();
+  async create(): Promise<string> {
+    const review = new Reviews();
+    return (await review.save())._id;
   }
-  async getByID(id: string): Promise<ReviewInput[] | null> {
-    return await Reviews.findById(id);
+  async getByID(
+    id: string,
+    offset: number
+  ): Promise<ReviewInput[] | undefined> {
+    return (
+      await Reviews.findById(id, {
+        reviews: { $slice: [10 * offset, 10] },
+      })
+    )?.reviews;
   }
   async update(
     id: string,
@@ -15,13 +24,31 @@ export class ReviewRespository implements ReviewRespositoryInterface {
     remove: boolean = false
   ): Promise<any> {
     if (!remove) {
-      return await Reviews.findByIdAndUpdate(id, {
-        $add: { reviews: data },
-      });
+      return (
+        await Reviews.findByIdAndUpdate(
+          id,
+          {
+            $push: { reviews: data },
+          },
+          { new: true, fields: { reviews: { $slice: -1 } } }
+        )
+      )?.reviews;
     } else {
-      return await Reviews.findByIdAndUpdate(id, {
-        $pull: { reviews: { _id: data._id } },
+      const isexist = await Reviews.exists({
+        _id: id,
+        "reviews._id": data._id,
       });
+
+      if (!isexist) throw new Error("This Review is not exist");
+      return (
+        await Reviews.findByIdAndUpdate(
+          id,
+          {
+            $pull: { reviews: { _id: data._id } },
+          },
+          { fields: { reviews: { $slice: -1 } } }
+        )
+      )?.reviews;
     }
   }
   async delete(id: string): Promise<void> {

@@ -1,4 +1,5 @@
 import amqplib, { Channel, ConsumeMessage } from "amqplib";
+import ReviewServiceInterface from "../interface/Review/Review.service.interface";
 
 export default class MessageBroker {
   channel: Channel;
@@ -29,7 +30,7 @@ export default class MessageBroker {
     console.log("Sent: ", msg);
   }
 
-  async RPCObserver(RPC_QUEUE_NAME: string) {
+  async RPCObserver(RPC_QUEUE_NAME: string, service: ReviewServiceInterface) {
     const channel = await this.getChannel();
     await channel.assertQueue(RPC_QUEUE_NAME, {
       durable: false,
@@ -38,14 +39,22 @@ export default class MessageBroker {
     channel.consume(
       RPC_QUEUE_NAME,
       async (msg: ConsumeMessage | null) => {
-        console.log("rcesive from Socket", msg);
         if (msg) {
           // DB Operation
-          // const payload = JSON.parse(msg.content.toString());
+          let response: any;
+          const payload = JSON.parse(msg.content.toString());
+          console.log(msg.properties.headers);
+          switch (msg.properties.headers!.toServer) {
+            case "createReviews":
+              response = await service.createReviews();
+
+              break;
+          }
+
           // const response = await service.serveRPCRequest(payload);
           channel.sendToQueue(
             msg.properties.replyTo,
-            Buffer.from(JSON.stringify("Rpc replay from Socket")),
+            Buffer.from(JSON.stringify(response)),
             {
               correlationId: msg.properties.correlationId,
             }

@@ -1,5 +1,6 @@
 import amqplib, { Channel, ConsumeMessage } from "amqplib";
 import { v4 } from "uuid";
+import RPCRequestPayload from "../interface/RPCRequestPayload.interface";
 
 export default class MessageBroker {
   channel: Channel;
@@ -25,16 +26,23 @@ export default class MessageBroker {
     }
   }
 
-  requestData = async (RPC_QUEUE_NAME, requestPayload, uuid) => {
+  async requestData(
+    RPC_QUEUE_NAME: string,
+    requestPayload: RPCRequestPayload,
+    uuid: string
+  ) {
     try {
       const channel = await this.getChannel();
       const q = await channel.assertQueue("", { exclusive: true });
       channel.sendToQueue(
         RPC_QUEUE_NAME,
-        Buffer.from(JSON.stringify(requestPayload)),
+        Buffer.from(JSON.stringify(requestPayload.data)),
         {
           replyTo: q.queue,
           correlationId: uuid,
+          headers: {
+            toServer: requestPayload.toServer,
+          },
         }
       );
 
@@ -63,11 +71,14 @@ export default class MessageBroker {
       console.log(error);
       return "error";
     }
-  };
+  }
 
-  async RPCRequest(RPC_QUEUE_NAME, requestPayload) {
-    const uuid = v4(); // correlationId
-    console.log(RPC_QUEUE_NAME, requestPayload, uuid);
-    return await this.requestData(RPC_QUEUE_NAME, requestPayload, uuid);
+  async RPCRequest<T>(
+    RPC_QUEUE_NAME: string,
+    requestPayload: RPCRequestPayload
+  ): Promise<T> {
+    const uuid = v4();
+
+    return (await this.requestData(RPC_QUEUE_NAME, requestPayload, uuid)) as T;
   }
 }

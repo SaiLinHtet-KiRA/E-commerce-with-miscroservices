@@ -2,8 +2,8 @@ import { Server, Socket } from "socket.io";
 import express, { Express } from "express";
 import { Server as httpServer, createServer } from "http";
 
-export class SocketServer {
-  private socket: Server;
+export default class SocketServer {
+  socket: Server;
   private server: httpServer;
   private port: number;
 
@@ -11,7 +11,6 @@ export class SocketServer {
     this.server = createServer(app);
     this.socket = new Server(this.server);
     this.port = 4002;
-    this.startServer();
   }
   startServer() {
     console.log("started");
