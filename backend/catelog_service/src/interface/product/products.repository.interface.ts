@@ -5,5 +5,5 @@ export default interface productRepositoryInterface {
   get(): Promise<Product[]>;
   getByID(id: string): Promise<Product | null>;
   updata(id: string, data: Omit<Product, "id">): Promise<Product>;
-  delete(id: string): Promise<void>;
+  delete(id: string): Promise<Product>;
 }

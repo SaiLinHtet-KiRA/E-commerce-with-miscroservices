@@ -4,11 +4,12 @@ import productServiceInterface from "../interface/product/products.service.inter
 import productsRepository from "../repository/products.repository";
 import { NotFoundError, ValidationError } from "../util/error/errors";
 import MessageBroker from "../server/MessageBroker";
+import { REVIEW_BINDING_KEY, REVIEW_RPCQUEUE_NAME } from "../config";
 
 export default class productService implements productServiceInterface {
   repo: productsRepository;
 
-  constructor(private msgBoker: MessageBroker) {
+  constructor(private msgBroker: MessageBroker) {
     this.repo = new productsRepository();
   }
   async createProduct(data: Omit<Product, "id">): Promise<void> {
@@ -17,8 +18,8 @@ export default class productService implements productServiceInterface {
       data.images = [];
       data.images[0] = "image string";
       data.images[1] = "image string2";
-      data.ReviewCollection = await this.msgBoker.RPCRequest<string>(
-        "scoketServer",
+      data.ReviewCollection = await this.msgBroker.RPCRequest<string>(
+        REVIEW_RPCQUEUE_NAME,
         {
           data: "",
           toServer: "createReviews",
@@ -55,8 +56,16 @@ export default class productService implements productServiceInterface {
   }
   async deleteProduct(id: string): Promise<void> {
     try {
-      await this.repo.delete(id);
+      const deletedProduct = await this.repo.delete(id);
+      this.msgBroker.PublishMessage(
+        REVIEW_BINDING_KEY,
+        {
+          id: deletedProduct.ReviewCollection,
+        },
+        { toServe: "deleteReviews" }
+      );
     } catch (error) {
+      console.log(error);
       throw new ValidationError("Product Can't delete");
     }
   }

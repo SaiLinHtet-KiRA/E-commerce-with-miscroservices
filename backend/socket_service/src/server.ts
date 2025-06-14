@@ -4,17 +4,27 @@ import MessageBroker from "./server/MessageBroker";
 import SocketServer from "./server/socket";
 import { config } from "dotenv";
 import ReviewService from "./services/Review.service";
+import {
+  REVIEW_BINDING_KEY,
+  REVIEW_QUEUE_NAME,
+  REVIEW_RPCQUEUE_NAME,
+} from "./config";
 
 config();
 
+const reviewService = new ReviewService();
 const expressServer = new ExpressServer();
 export const socketSercer = new SocketServer(expressServer.app);
+const Broker = new MessageBroker();
 
-function startServer() {
+async function startServer() {
   socketSercer.startServer();
   connectDB();
-
-  const Rpc = new MessageBroker();
-  Rpc.RPCObserver("scoketServer", new ReviewService());
+  await Broker.comuseMessage(
+    reviewService,
+    REVIEW_BINDING_KEY,
+    REVIEW_QUEUE_NAME
+  );
+  await Broker.RPCObserver(REVIEW_RPCQUEUE_NAME, reviewService);
 }
 startServer();

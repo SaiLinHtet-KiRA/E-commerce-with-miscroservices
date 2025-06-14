@@ -1,40 +1,44 @@
 import amqplib, { Channel, ConsumeMessage } from "amqplib";
 import { v4 } from "uuid";
 import RPCRequestPayload from "../interface/RPCRequestPayload.interface";
+import { EXCHANGE_NAME } from "../config";
 
 export default class MessageBroker {
   channel: Channel;
 
-  constructor() {
-    this.CreateChannel();
-  }
-
-  private getChannel = async () => {
-    const amqplibConnection = await amqplib.connect(process.env.RABBIT_MQ_URL!);
-    return await amqplibConnection.createChannel();
-  };
-
   async CreateChannel() {
     try {
-      const channel = await this.getChannel();
-      await channel.assertQueue(process.env.EXCHANGE_NAME!, {
+      const amqplibConnection = await amqplib.connect(
+        process.env.RABBIT_MQ_URL!
+      );
+      this.channel = await amqplibConnection.createChannel();
+      await this.channel.assertExchange(process.env.EXCHANGE_NAME!, "direct", {
         durable: true,
       });
-      this.channel = channel;
     } catch (err) {
       throw err;
     }
   }
-
+  async PublishMessage(service, msg, headers) {
+    if (!this.channel) await this.CreateChannel();
+    this.channel.publish(
+      EXCHANGE_NAME,
+      service,
+      Buffer.from(JSON.stringify(msg)),
+      {
+        headers,
+      }
+    );
+  }
   async requestData(
     RPC_QUEUE_NAME: string,
     requestPayload: RPCRequestPayload,
     uuid: string
   ) {
     try {
-      const channel = await this.getChannel();
-      const q = await channel.assertQueue("", { exclusive: true });
-      channel.sendToQueue(
+      if (!this.channel) await this.CreateChannel();
+      const q = await this.channel.assertQueue("", { exclusive: true });
+      this.channel.sendToQueue(
         RPC_QUEUE_NAME,
         Buffer.from(JSON.stringify(requestPayload.data)),
         {
@@ -49,14 +53,15 @@ export default class MessageBroker {
       return new Promise((resolve, reject) => {
         // timeout n
         const timeout = setTimeout(() => {
-          channel.close();
+          this.channel.close();
           resolve("API could not fullfil the request!");
         }, 8000);
-        channel.consume(
+        this.channel.consume(
           q.queue,
           (msg: ConsumeMessage | null) => {
             if (msg && msg.properties.correlationId == uuid) {
               resolve(JSON.parse(msg.content.toString()));
+              this.channel.close();
               clearTimeout(timeout);
             } else {
               reject("data Not found!");

@@ -13,7 +13,6 @@ export default class SocketServer {
     this.port = 4002;
   }
   startServer() {
-    console.log("started");
     this.socket.on("connection", (socket) => {
       console.log("connection");
       // socket.emit("connect", { message: "a new client connected" });

@@ -19,7 +19,7 @@ export default class productsRepository implements productRepositoryInterface {
   async updata(id: string, data: Omit<Product, "id">): Promise<Product> {
     return await this.prisma.product.update({ where: { id }, data });
   }
-  async delete(id: string): Promise<void> {
-    await this.prisma.product.delete({ where: { id } });
+  async delete(id: string): Promise<Product> {
+    return await this.prisma.product.delete({ where: { id } });
   }
 }
