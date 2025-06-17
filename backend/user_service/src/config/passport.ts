@@ -1,10 +1,16 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { userRepository } from "../repository";
 
 passport.use(
-  new LocalStrategy(function verify(username, password, cb) {
-    console.log(username, password);
-    const user = { username, password };
+  new LocalStrategy({ usernameField: "email" }, function verify(
+    email,
+    password,
+    cb
+  ) {
+    console.log(email, password);
+    userRepository.findBy({ email });
+    const user = { email, password };
     cb(user);
   })
 );

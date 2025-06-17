@@ -1,0 +1,25 @@
+import { IsEmail, IsNotEmpty, MaxLength, MinLength } from "class-validator";
+
+export class userAuth {
+  @IsNotEmpty()
+  username: string;
+
+  @IsEmail()
+  email: string;
+
+  @MinLength(8)
+  @MaxLength(20)
+  password: string;
+}
+export interface userProfile extends userAuth {
+  id: number;
+  phone: string;
+  avator: string;
+  payment: string;
+  state: string;
+  address: string;
+  road: string;
+  orders: string;
+  carts: string;
+  createdAt: Date;
+}

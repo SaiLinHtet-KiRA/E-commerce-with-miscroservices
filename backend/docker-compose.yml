@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  user_db_server:
+    build: ./DB
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./DB/sql/user:/var/lib/postgresql/data

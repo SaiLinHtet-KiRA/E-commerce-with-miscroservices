@@ -1,16 +1,35 @@
 // import connectDB from "./config/ConnectDB";
+import { config } from "dotenv";
+config();
+import pool from "./config/DB";
 import { ExpressServer } from "./server/express";
 // import MessageBroker from "./server/MessageBroker";
 
-import { config } from "dotenv";
-
-config();
+import "../src/config/passport";
 
 const expressServer = new ExpressServer();
 
-function startServer() {
-  // connectDB();
+async function startServer() {
   expressServer.startServer();
+  // await pool.query("DROP TABLE users");
+
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS users ( \
+     id SERIAL PRIMARY KEY, \
+     username VARCHAR(80) NOT NULL, \
+    email VARCHAR(100) UNIQUE NOT NULL , \
+     password VARCHAR(20),\
+     phone VARCHAR(12) UNIQUE, \
+     avator TEXT,\
+     payment VARCHAR(20),\
+     state VARCHAR(20),\
+     address VARCHAR(20),\
+     road VARCHAR(20),\
+     orders VARCHAR(20),\
+     carts VARCHAR(20), \
+     createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP \
+   );"
+  );
   // const Rpc = new MessageBroker();
   // Rpc.RPCObserver("scoketServer", new ReviewService());
 }
