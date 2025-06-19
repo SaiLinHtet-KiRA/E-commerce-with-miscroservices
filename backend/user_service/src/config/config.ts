@@ -4,4 +4,5 @@ export const [
   POSTGRES_PASSWORD,
   POSTGRES_DB,
   POSTGRES_PORT,
-] = ["localhost", "kira", "kira", "user", 5432];
+  SECRET,
+] = ["localhost", "kira", "kira", "user", 5432, "E-commerce"];

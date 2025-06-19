@@ -16,22 +16,14 @@ export default class UserRepository implements UserRepositoryInterface {
   }
 
   async getByID(id: number): Promise<any> {
-    return await pool.query("SELECT * FROM users WHERE id=$1", [id]);
+    return (await pool.query("SELECT * FROM users WHERE id=$1", [id])).rows[0];
   }
 
-  async findBy({
-    username,
-    email,
-    phone,
-  }: {
-    username?: string;
-    email?: string;
-    phone?: string;
-  }): Promise<userProfile> {
+  async findBy(searchBy: string): Promise<userProfile> {
     return (
       await pool.query(
         "SELECT * FROM users WHERE username=$1 OR email=$2 OR phone=$3",
-        [username, email, phone]
+        [searchBy, searchBy, searchBy]
       )
     ).rows[0];
   }

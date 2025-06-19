@@ -18,7 +18,7 @@ async function startServer() {
      id SERIAL PRIMARY KEY, \
      username VARCHAR(80) NOT NULL, \
     email VARCHAR(100) UNIQUE NOT NULL , \
-     password VARCHAR(20),\
+     password TEXT,\
      phone VARCHAR(12) UNIQUE, \
      avator TEXT,\
      payment VARCHAR(20),\

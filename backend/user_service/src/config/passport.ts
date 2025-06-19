@@ -1,34 +1,34 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { userRepository } from "../repository";
+import bcrypt from "bcryptjs";
 
 passport.use(
-  new LocalStrategy({ usernameField: "email" }, function verify(
-    email,
+  new LocalStrategy({ usernameField: "authfield" }, async function verify(
+    authfield,
     password,
     cb
   ) {
-    console.log(email, password);
-    userRepository.findBy({ email });
-    const user = { email, password };
-    cb(user);
+    const user = await userRepository.findBy(authfield);
+    if (user) {
+      const verifyPassword = bcrypt.compareSync(password, user.password);
+      console.log("verifyPassword", verifyPassword);
+      if (verifyPassword) {
+        console.log("here");
+        return cb(null, user);
+      }
+    }
+    // cb(user);
   })
 );
 
-passport.serializeUser((user, cb) => {
+passport.serializeUser((user: any, cb) => {
   console.log("serializeUser ", user);
-  cb(null, user);
+  cb(null, user.id);
 });
 
-passport.deserializeUser(async (id: any, cb) => {
-  //   const user = await User.findById(id, { cart: 0, order: 0, liked: 0 }).catch(
-  //     (err) => {
-  //       cb(err, null);
-  //     }
-  //   );
-
-  //   if (user) cb(null, user);
-  console.log("deserializeUser  id-", id);
-
-  cb(null, id);
+passport.deserializeUser(async (id: number, cb) => {
+  const user = await userRepository.getByID(id);
+  console.log("deserializeUser  ", user);
+  if (user) cb(null, user);
 });
