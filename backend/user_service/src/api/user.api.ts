@@ -5,19 +5,22 @@ import { plainToClass } from "class-transformer";
 import UserService from "../service/user.service";
 import passport from "passport";
 import { userRepository } from "../repository";
+import CheckUserExist from "../middleware/CheckUserExist";
+import ChangeToAuthField from "../middleware/ChangeToAuthField";
+import { AuthorizeError } from "../util/error/errors";
 
 const router = Router();
 const service = new UserService(userRepository);
 router.post(
   "/auth/singup",
+  CheckUserExist,
   async (req: Request<null, userAuth>, res: Response, next: NextFunction) => {
     try {
       const data = await RequestBodyValidation<userAuth>(
         plainToClass(userAuth, req.body)
       );
       await service.singup(data);
-      console.log("created");
-      res.status(200).json("");
+      res.status(200).json("User is successfully created");
     } catch (error) {
       next(error);
     }
@@ -25,29 +28,7 @@ router.post(
 );
 router.post(
   "/auth/login",
-  (
-    req: Request<
-      null,
-      null,
-      { username?: string; email?: string; phone?: string; authfield: string }
-    >,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const { username, email, phone } = req.body;
-    if (username) {
-      req.body.authfield = username;
-      next();
-    }
-    if (email) {
-      req.body.authfield = email;
-      next();
-    }
-    if (phone) {
-      req.body.authfield = phone;
-      next();
-    }
-  },
+  ChangeToAuthField,
   passport.authenticate("local"),
   async (
     req: Request<
@@ -59,10 +40,9 @@ router.post(
     next: NextFunction
   ) => {
     try {
-      console.log("req.user", req.user);
-      res.status(200).json(req.user);
+      if (req.user) res.status(200).json("Logined Successfully");
+      throw new AuthorizeError("user dose not unauthorized");
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -71,13 +51,13 @@ router.get(
   "/auth/login/success",
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("/auth/login/success");
       const user = req.user;
-      console.log(user);
-      if (user) res.status(200).json(user);
-      res.status(400).json("false");
+      if (!user)
+        throw new AuthorizeError(
+          "user dose not unauthorized.Please login first"
+        );
+      res.status(200).json(user);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -87,7 +67,7 @@ router.get(
   (req: Request, res: Response, next: NextFunction) => {
     try {
       req.logOut((error) => console.log(error));
-      res.status(200).json("Logout success");
+      res.status(200).json("Successfully Logout ");
     } catch (error) {
       next(error);
     }
@@ -98,7 +78,6 @@ router.get(
   async (req: Request<null, userAuth>, res: Response, next: NextFunction) => {
     try {
       await service.getProfile(1);
-      console.log("created");
       res.status(200).json("");
     } catch (error) {
       next(error);

@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, MaxLength, MinLength } from "class-validator";
+import {
+  Contains,
+  contains,
+  IsEmail,
+  IsNotEmpty,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 
 export class userAuth {
   @IsNotEmpty()
@@ -8,7 +15,13 @@ export class userAuth {
   email: string;
 
   @MinLength(8)
-  @MaxLength(20)
+  password: string;
+}
+export class userLoginForm {
+  @IsEmail()
+  authfield: string;
+
+  @MinLength(8)
   password: string;
 }
 export interface userProfile extends userAuth {

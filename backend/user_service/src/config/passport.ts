@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { userRepository } from "../repository";
 import bcrypt from "bcryptjs";
+import { ValidationError } from "../util/error/errors";
 
 passport.use(
   new LocalStrategy({ usernameField: "authfield" }, async function verify(
@@ -14,21 +15,21 @@ passport.use(
       const verifyPassword = bcrypt.compareSync(password, user.password);
       console.log("verifyPassword", verifyPassword);
       if (verifyPassword) {
-        console.log("here");
         return cb(null, user);
+      } else {
+        return cb(new ValidationError("Wrong Password"));
       }
     }
-    // cb(user);
+    return cb(new ValidationError("User dose not found"));
   })
 );
 
 passport.serializeUser((user: any, cb) => {
-  console.log("serializeUser ", user);
   cb(null, user.id);
 });
 
 passport.deserializeUser(async (id: number, cb) => {
   const user = await userRepository.getByID(id);
-  console.log("deserializeUser  ", user);
+
   if (user) cb(null, user);
 });

@@ -3,6 +3,7 @@ import UserServiceInterface from "../interface/user.service.interface";
 import { userAuth, userProfile } from "../model/dto/user.dto";
 import UserRepository from "../repository/user.repository";
 import bcrypt from "bcryptjs";
+import { APIError } from "../util/error/errors";
 
 export default class UserService implements UserServiceInterface {
   constructor(private repo: UserRepository) {}
@@ -11,10 +12,9 @@ export default class UserService implements UserServiceInterface {
     try {
       const salt = bcrypt.genSaltSync(10);
       data.password = bcrypt.hashSync(data.password, salt);
-      this, this.repo.create(data);
+      await this.repo.create(data);
     } catch (error) {
-      console.log(error);
-      throw new Error("User sing in fail");
+      throw new APIError("Some error had happened in user singin");
     }
   }
   async getProfile(id: number): Promise<userProfile> {
