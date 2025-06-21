@@ -11,7 +11,7 @@ const pool = new Pool({
   host: POSTGRES_HOST,
   user: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
-  // database: POSTGRES_DB,
+  database: POSTGRES_DB,
   port: POSTGRES_PORT,
   // idleTimeoutMillis: 30000,
 });

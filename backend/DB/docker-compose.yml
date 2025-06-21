@@ -13,4 +13,15 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: sai123pol
 
     volumes:
-      - ./db-data/catalog_db_server/:/data/db
+      - ./DB-data/noSQL/catalog-db/:/data/db
+
+  user_sql_db_server:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: kira
+      POSTGRES_PASSWORD: kira
+      POSTGRES_DB: user
+    volumes:
+      - ./DB-data/sql/user-db/:/var/lib/postgresql/data
