@@ -1,6 +1,6 @@
 import connectDB from "./config/ConnectDB";
 import { ExpressServer } from "./server/express";
-import MessageBroker from "./server/MessageBroker";
+import RabbitMQ from "./util/message-broker/rabbitMQ";
 import SocketServer from "./server/socket";
 import { config } from "dotenv";
 import ReviewService from "./services/Review.service";
@@ -15,7 +15,7 @@ config();
 const reviewService = new ReviewService();
 const expressServer = new ExpressServer();
 export const socketSercer = new SocketServer(expressServer.app);
-const Broker = new MessageBroker();
+const Broker = new RabbitMQ();
 
 async function startServer() {
   socketSercer.startServer();

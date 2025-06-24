@@ -1,7 +1,7 @@
 import amqplib, { Channel, ConsumeMessage } from "amqplib";
 import { v4 } from "uuid";
-import RPCRequestPayload from "../interface/RPCRequestPayload.interface";
-import { EXCHANGE_NAME } from "../config";
+import RPCRequestPayload from "../../interface/RPCRequestPayload.interface";
+import { EXCHANGE_NAME } from "../../config";
 
 export default class MessageBroker {
   channel: Channel;
@@ -53,16 +53,16 @@ export default class MessageBroker {
       return new Promise((resolve, reject) => {
         // timeout n
         const timeout = setTimeout(() => {
-          this.channel.close();
-          resolve("API could not fullfil the request!");
+          this.channel.deleteQueue(q.queue);
+          reject("API could not fullfil the request!");
         }, 8000);
         this.channel.consume(
           q.queue,
           (msg: ConsumeMessage | null) => {
             if (msg && msg.properties.correlationId == uuid) {
               resolve(JSON.parse(msg.content.toString()));
-              this.channel.close();
               clearTimeout(timeout);
+              this.channel.deleteQueue(q.queue);
             } else {
               reject("data Not found!");
             }

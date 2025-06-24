@@ -4,7 +4,7 @@ import { plainToClass } from "class-transformer";
 import Product from "../interface/product/product.interface";
 import ProductService from "../services/product.service";
 import formidable from "express-formidable";
-import MessageBroker from "../server/MessageBroker";
+import MessageBroker from "../util/message-broker/rabbitMQ";
 
 const router = express.Router();
 

@@ -1,7 +1,8 @@
 import amqplib, { Channel, ConsumeMessage } from "amqplib";
-import ReviewServiceInterface from "../interface/Review/Review.service.interface";
-import { EXCHANGE_NAME, REVIEW_BINDING_KEY } from "../config";
-export default class MessageBroker {
+import ReviewServiceInterface from "../../interface/Review/Review.service.interface";
+import { EXCHANGE_NAME, REVIEW_BINDING_KEY } from "../../config";
+
+export default class RabbitMQ {
   channel: Channel;
 
   async CreateChannel() {
@@ -57,6 +58,7 @@ export default class MessageBroker {
 
     await this.channel.assertQueue(RPC_QUEUE_NAME, {
       durable: false,
+      autoDelete: true,
     });
     this.channel.prefetch(1);
     this.channel.consume(
@@ -66,7 +68,7 @@ export default class MessageBroker {
           // DB Operation
           let response: any;
           const payload = JSON.parse(msg.content.toString());
-
+          console.log("message", msg);
           switch (msg.properties.headers!.toServer) {
             case "createReviews":
               response = await service.createReviews();

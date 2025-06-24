@@ -1,5 +1,5 @@
 import { ExpressServer } from "./server/express";
-import MessageBroker from "./server/MessageBroker";
+import MessageBroker from "./util/message-broker/rabbitMQ";
 import { config } from "dotenv";
 
 config();

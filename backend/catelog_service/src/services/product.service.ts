@@ -3,8 +3,11 @@ import Product from "../interface/product/product.interface";
 import productServiceInterface from "../interface/product/products.service.interface";
 import productsRepository from "../repository/products.repository";
 import { NotFoundError, ValidationError } from "../util/error/errors";
-import MessageBroker from "../server/MessageBroker";
-import { REVIEW_BINDING_KEY, REVIEW_RPCQUEUE_NAME } from "../config";
+import MessageBroker from "../util/message-broker/rabbitMQ";
+import {
+  REVIEW_BINDING_KEY,
+  REVIEW_RPCQUEUE_NAME,
+} from "../config/rabbitMQ.config";
 
 export default class productService implements productServiceInterface {
   repo: productsRepository;
@@ -25,6 +28,7 @@ export default class productService implements productServiceInterface {
           toServer: "createReviews",
         }
       );
+      console.log(data.ReviewCollection);
       await this.repo.create(data);
     } catch (error) {
       console.log(error);
