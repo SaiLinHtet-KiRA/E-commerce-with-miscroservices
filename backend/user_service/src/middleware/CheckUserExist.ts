@@ -3,7 +3,7 @@ import { userAuth } from "../model/dto/user.dto";
 import { userRepository } from "../repository";
 import { ValidationError } from "../util/error/errors";
 
-export default async function CheckUserExist(
+export async function CheckUserExist(
   req: Request<null, userAuth>,
   res: Response,
   next: NextFunction

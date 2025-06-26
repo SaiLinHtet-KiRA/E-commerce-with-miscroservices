@@ -3,7 +3,7 @@ import { userLoginForm } from "../model/dto/user.dto";
 import { plainToClass } from "class-transformer";
 import RequestBodyValidation from "../util/RequestBodyValidation";
 
-export default async function ChangeToAuthField(
+export async function ChangeToAuthField(
   req: Request<
     null,
     null,

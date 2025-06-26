@@ -19,12 +19,17 @@ export default class UserService implements UserServiceInterface {
   }
   async getProfile(id: number): Promise<userProfile> {
     try {
-      return await this.repo.get(id);
+      return await this.repo.getByID(id);
     } catch (error) {
       throw new Error("Method not implemented.");
     }
   }
   async updateProfile(id: number, data: userProfile): Promise<userProfile> {
-    throw new Error("Method not implemented.");
+    try {
+      return await this.repo.update(id, data);
+    } catch (error) {
+      console.log(error);
+      throw new APIError("User Profile updating failed");
+    }
   }
 }

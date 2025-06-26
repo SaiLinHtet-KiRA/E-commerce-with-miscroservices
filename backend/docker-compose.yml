@@ -3,3 +3,4 @@ version: "3"
 include:
   - ./DB/docker-compose.yml
   - ./RabbitMq/docker-compose.yml
+  - ./nginx/docker-compose.yml

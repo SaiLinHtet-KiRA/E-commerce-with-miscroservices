@@ -3,6 +3,7 @@ import {
   contains,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   MaxLength,
   MinLength,
 } from "class-validator";
@@ -25,7 +26,7 @@ export class userLoginForm {
   password: string;
 }
 export interface userProfile extends userAuth {
-  id: number;
+  id?: number;
   phone: string;
   avator: string;
   payment: string;
@@ -35,4 +36,5 @@ export interface userProfile extends userAuth {
   orders: string;
   carts: string;
   createdAt: Date;
+  role: "admin" | "user";
 }

@@ -15,7 +15,7 @@ export default class UserRepository implements UserRepositoryInterface {
     console.log(users.rows);
   }
 
-  async getByID(id: number): Promise<any> {
+  async getByID(id: number): Promise<userProfile> {
     return (await pool.query("SELECT * FROM users WHERE id=$1", [id])).rows[0];
   }
 
@@ -28,9 +28,10 @@ export default class UserRepository implements UserRepositoryInterface {
     ).rows[0];
   }
 
-  async update(id: number, data: userProfile): Promise<any> {
-    return await pool.query(
-      "UPDATE users SET username=$2,\
+  async update(id: number, data: userProfile): Promise<userProfile> {
+    return (
+      await pool.query(
+        "UPDATE users SET username=$2,\
       email=$3,\
       phone=$4,\
       password=$5,\
@@ -40,22 +41,25 @@ export default class UserRepository implements UserRepositoryInterface {
      address=$9,\
      road=$10,\
      orders=$11,\
-     carts=$12 WHERE id=$1 RETURNING *",
-      [
-        id,
-        data.username,
-        data.email,
-        data.phone,
-        data.password,
-        data.avator,
-        data.payment,
-        data.state,
-        data.address,
-        data.road,
-        data.orders,
-        data.carts,
-      ]
-    );
+     carts=$12,\
+     role=$13 WHERE id=$1 RETURNING *",
+        [
+          id,
+          data.username,
+          data.email,
+          data.phone,
+          data.password,
+          data.avator,
+          data.payment,
+          data.state,
+          data.address,
+          data.road,
+          data.orders,
+          data.carts,
+          data.role,
+        ]
+      )
+    ).rows[0];
   }
   delete(id: number): Promise<any> {
     throw new Error("Method not implemented.");

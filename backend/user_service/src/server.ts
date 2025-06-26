@@ -5,14 +5,13 @@ import pool from "./config/DB";
 import { ExpressServer } from "./server/express";
 // import MessageBroker from "./server/MessageBroker";
 
-import "../src/config/passport";
+import "../src/util/passport";
 
 const expressServer = new ExpressServer();
 
 async function startServer() {
-  expressServer.startServer();
   // await pool.query("DROP TABLE users");
-
+  // await pool.query(" CREATE TYPE Role AS ENUM ('admin', 'user');");
   await pool.query(
     "CREATE TABLE IF NOT EXISTS users ( \
      id SERIAL PRIMARY KEY, \
@@ -27,9 +26,11 @@ async function startServer() {
      road VARCHAR(20),\
      orders VARCHAR(20),\
      carts VARCHAR(20), \
+    role Role DEFAULT  'user',\
      createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP \
    );"
   );
+  expressServer.startServer();
   // const Rpc = new MessageBroker();
   // Rpc.RPCObserver("scoketServer", new ReviewService());
 }

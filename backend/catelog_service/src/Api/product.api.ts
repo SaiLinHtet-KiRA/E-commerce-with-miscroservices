@@ -5,6 +5,7 @@ import Product from "../interface/product/product.interface";
 import ProductService from "../services/product.service";
 import formidable from "express-formidable";
 import MessageBroker from "../util/message-broker/rabbitMQ";
+import { CheckUserAuthenticated } from "../middleware";
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ const productService = new ProductService(msgBroker);
 
 router.post(
   "/product",
+  CheckUserAuthenticated,
   formidable({ multiples: true }),
   async (
     request: Request,
@@ -24,7 +26,7 @@ router.post(
         plainToClass(Product, request.fields)
       );
 
-      await productService.createProduct(body);
+      // await productService.createProduct(body);
       response.status(200).json("Product successfully created");
     } catch (error) {
       next(error);

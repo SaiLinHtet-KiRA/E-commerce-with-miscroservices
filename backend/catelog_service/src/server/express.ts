@@ -1,6 +1,6 @@
 import express, { Express } from "express";
-import ProdutRoutes from "../Api/product.api";
-import CategoryRoutes from "../Api/category.api";
+import ProdutRoutes from "../api/product.api";
+import CategoryRoutes from "../api/category.api";
 import { HandleErrorWithLogger } from "../util/error/handler";
 
 export class ExpressServer {

@@ -13,7 +13,7 @@ passport.use(
     const user = await userRepository.findBy(authfield);
     if (user) {
       const verifyPassword = bcrypt.compareSync(password, user.password);
-      console.log("verifyPassword", verifyPassword);
+
       if (verifyPassword) {
         return cb(null, user);
       } else {
@@ -30,6 +30,6 @@ passport.serializeUser((user: any, cb) => {
 
 passport.deserializeUser(async (id: number, cb) => {
   const user = await userRepository.getByID(id);
-
-  if (user) cb(null, user);
+  const { avator, username } = user;
+  if (user) cb(null, { id, avator, username });
 });
