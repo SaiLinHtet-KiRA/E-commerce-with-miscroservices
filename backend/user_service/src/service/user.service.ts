@@ -1,4 +1,4 @@
-import { SECRET } from "../config/config";
+import { SECRET } from "../config/other.config";
 import UserServiceInterface from "../interface/user.service.interface";
 import { userAuth, userProfile } from "../model/dto/user.dto";
 import UserRepository from "../repository/user.repository";

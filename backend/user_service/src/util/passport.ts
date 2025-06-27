@@ -30,6 +30,6 @@ passport.serializeUser((user: any, cb) => {
 
 passport.deserializeUser(async (id: number, cb) => {
   const user = await userRepository.getByID(id);
-  const { avator, username } = user;
-  if (user) cb(null, { id, avator, username });
+  const { avator, username,role } = user;
+  if (user) cb(null, { id, avator, username,role });
 });

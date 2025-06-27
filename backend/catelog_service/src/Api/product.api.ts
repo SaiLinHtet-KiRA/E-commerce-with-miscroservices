@@ -37,6 +37,7 @@ router.get(
   "/products",
   async (request: Request, response: Response, next: NextFunction) => {
     try {
+      console.log(request.user);
       const products = await productService.getProducts();
       response.status(200).json(products);
     } catch (error) {

@@ -25,7 +25,8 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.16.0",
-    "uni": "^0.0.6"
+    "uni": "^0.0.6",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.7",

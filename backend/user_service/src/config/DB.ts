@@ -5,7 +5,7 @@ import {
   POSTGRES_PASSWORD,
   POSTGRES_PORT,
   POSTGRES_USER,
-} from "./config";
+} from "./other.config";
 
 const pool = new Pool({
   host: POSTGRES_HOST,

@@ -1,0 +1,13 @@
+export const {
+  POSTGRES_HOST,
+  POSTGRES_DB,
+  POSTGRES_PASSWORD,
+  POSTGRES_PORT,
+  POSTGRES_USER,
+} = {
+  POSTGRES_HOST: "localhost",
+  POSTGRES_USER: "kira",
+  POSTGRES_PASSWORD: "kira",
+  POSTGRES_DB: "user",
+  POSTGRES_PORT: 5432,
+};

@@ -2,6 +2,14 @@ import express, { Express } from "express";
 import ProdutRoutes from "../api/product.api";
 import CategoryRoutes from "../api/category.api";
 import { HandleErrorWithLogger } from "../util/error/handler";
+import cookieSession from "cookie-session";
+import passport from "passport";
+
+const cookie = cookieSession({
+  name: "E commerce-session",
+  secret: "dadadas",
+  maxAge: 1000 * 60 * 60 * 24,
+});
 
 export class ExpressServer {
   private app: Express;
@@ -12,6 +20,10 @@ export class ExpressServer {
     this.serverStart();
   }
   serverStart() {
+    this.app.use(cookie);
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+
     this.app.use(express.json());
     this.app.use(ProdutRoutes);
     this.app.use(CategoryRoutes);
