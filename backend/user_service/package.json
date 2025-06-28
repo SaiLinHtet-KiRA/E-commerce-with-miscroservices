@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon  src/server.ts",
+    "dev": "tsc-watch -p tsconfig.json --onSuccess \"npm run start\"",
     "start": "node dist/server.js",
     "build": "tsc -p .",
     "test": "jest"
@@ -34,8 +34,6 @@
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/pg": "^8.15.4",
-    "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "tsc-watch": "^7.1.1"
   }
 }

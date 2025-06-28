@@ -1,5 +1,5 @@
 import * as express from "express";
-import UserInfo from "./interface/userInfo.interface";
+import UserInfo from "../interface/userInfo.interface";
 
 declare global {
   namespace Express {

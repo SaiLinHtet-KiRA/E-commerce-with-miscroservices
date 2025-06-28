@@ -26,44 +26,18 @@ router.post(
         plainToClass(Product, request.fields)
       );
 
-      // await productService.createProduct(body);
+      //await productService.createProduct(body);
       response.status(200).json("Product successfully created");
     } catch (error) {
       next(error);
     }
   }
 );
-router.get(
-  "/products",
-  async (request: Request, response: Response, next: NextFunction) => {
-    try {
-      console.log(request.user);
-      const products = await productService.getProducts();
-      response.status(200).json(products);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-router.get(
-  "/product/:id",
-  async (
-    request: Request<{ id: string }>,
-    response: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const { id } = request.params;
-      const product = await productService.getProductsByID(id);
 
-      response.status(200).json(product);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 router.patch(
   "/product/:id",
+  CheckUserAuthenticated,
+  CheckUserIsAdmin,
   async (
     request: Request<{ id: string }, any, Omit<Product, "id">>,
     response: Response,
@@ -81,8 +55,11 @@ router.patch(
     }
   }
 );
+
 router.delete(
   "/product/:id",
+  CheckUserAuthenticated,
+  CheckUserIsAdmin,
   async (
     request: Request<{ id: string }>,
     response: Response,
@@ -98,4 +75,34 @@ router.delete(
   }
 );
 
+router.get(
+  "/products",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      console.log(request.user);
+      const products = await productService.getProducts();
+      response.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  "/product/:id",
+  async (
+    request: Request<{ id: string }>,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = request.params;
+      const product = await productService.getProductsByID(id);
+
+      response.status(200).json(product);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default router;

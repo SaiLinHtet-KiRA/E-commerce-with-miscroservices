@@ -6,7 +6,7 @@ export function CheckUserIsAdmin(
   res: Response,
   next: NextFunction
 ) {
-  if (req.user?.role === "admin") {
+  if (req.user?.role !== "admin") {
     throw new AuthorizeError("User is not an admin");
   }
   next();

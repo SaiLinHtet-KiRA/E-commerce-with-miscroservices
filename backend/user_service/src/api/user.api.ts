@@ -101,7 +101,7 @@ router.patch(
   ) => {
     try {
       const data = req.body;
-      const { id }: any = req.user;
+      const { id } = req.user!;
       const user = await service.updateProfile(id, data);
       res.status(200).json(user);
     } catch (error) {

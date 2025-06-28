@@ -5,7 +5,7 @@ import pool from "./config/DB";
 import { ExpressServer } from "./server/express";
 // import MessageBroker from "./server/MessageBroker";
 
-import "../src/util/passport";
+import "./util/passport";
 import { rabbitMQ } from "./util/message-broker";
 import { USER_RPCQUEUE_NAME } from "./config";
 import UserService from "./service/user.service";

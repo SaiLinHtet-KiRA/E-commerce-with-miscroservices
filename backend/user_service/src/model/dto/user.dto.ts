@@ -25,10 +25,15 @@ export class userLoginForm {
   @MinLength(8)
   password: string;
 }
-export interface userProfile extends userAuth {
-  id?: number;
-  phone: string;
+export interface userInfo {
+  id: number;
   avator: string;
+  username: string;
+  role: "admin" | "user";
+}
+export interface userProfile extends userAuth, userInfo {
+  phone: string;
+
   payment: string;
   state: string;
   address: string;
@@ -36,5 +41,4 @@ export interface userProfile extends userAuth {
   orders: string;
   carts: string;
   createdAt: Date;
-  role: "admin" | "user";
 }

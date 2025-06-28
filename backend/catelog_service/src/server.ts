@@ -1,7 +1,6 @@
 import { ExpressServer } from "./server/express";
 import { config } from "dotenv";
-import "../src/util/passport";
-import MessageBroker from "./util/message-broker/rabbitMQ";
+import "./util/passport";
 
 config();
 function startServer() {
