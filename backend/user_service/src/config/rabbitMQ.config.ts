@@ -10,7 +10,7 @@ export const {
   USER_RPCQUEUE_NAME,
   USER_QUEUE_NAME,
 } = {
-  RABBIT_MQ_URL: "http://localhost:15672",
+  RABBIT_MQ_URL: "amqp://kira:kira@localhost",
   EXCHANGE_NAME: "E-Commerce",
 
   REVIEW_BINDING_KEY: "REVIEW",

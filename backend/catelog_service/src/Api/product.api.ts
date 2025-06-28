@@ -4,17 +4,17 @@ import { plainToClass } from "class-transformer";
 import Product from "../interface/product/product.interface";
 import ProductService from "../services/product.service";
 import formidable from "express-formidable";
-import MessageBroker from "../util/message-broker/rabbitMQ";
-import { CheckUserAuthenticated } from "../middleware";
+import { CheckUserAuthenticated, CheckUserIsAdmin } from "../middleware";
+import { rabbitMQ } from "../util/message-broker";
 
 const router = express.Router();
 
-const msgBroker = new MessageBroker();
-const productService = new ProductService(msgBroker);
+const productService = new ProductService(rabbitMQ);
 
 router.post(
   "/product",
   CheckUserAuthenticated,
+  CheckUserIsAdmin,
   formidable({ multiples: true }),
   async (
     request: Request,

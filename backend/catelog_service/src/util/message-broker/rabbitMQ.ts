@@ -3,7 +3,7 @@ import { v4 } from "uuid";
 import RPCRequestPayload from "../../interface/RPCRequestPayload.interface";
 import { EXCHANGE_NAME } from "../../config";
 
-export default class MessageBroker {
+export default class RabbitMQ {
   channel: Channel;
 
   async CreateChannel() {

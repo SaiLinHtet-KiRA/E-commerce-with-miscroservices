@@ -6,6 +6,10 @@ import { ExpressServer } from "./server/express";
 // import MessageBroker from "./server/MessageBroker";
 
 import "../src/util/passport";
+import { rabbitMQ } from "./util/message-broker";
+import { USER_RPCQUEUE_NAME } from "./config";
+import UserService from "./service/user.service";
+import { userService } from "./service";
 
 const expressServer = new ExpressServer();
 
@@ -31,6 +35,7 @@ async function startServer() {
    );"
   );
   expressServer.startServer();
+  rabbitMQ.RPCObserver(USER_RPCQUEUE_NAME, userService);
   // const Rpc = new MessageBroker();
   // Rpc.RPCObserver("scoketServer", new ReviewService());
 }
