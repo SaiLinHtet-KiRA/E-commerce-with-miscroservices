@@ -1,5 +1,5 @@
-import { Server, Socket } from "socket.io";
-import express, { Express } from "express";
+import { Server } from "socket.io";
+import { Express } from "express";
 import { Server as httpServer, createServer } from "http";
 
 export default class SocketServer {

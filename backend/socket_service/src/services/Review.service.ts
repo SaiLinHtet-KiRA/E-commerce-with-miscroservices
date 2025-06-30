@@ -1,7 +1,7 @@
 import ReviewServiceInterface from "../interface/Review/Review.service.interface";
 import ReviewInput from "../model/dto/ReviewInput.dto";
 import { ReviewRespository } from "../repository/Review.respository";
-import { socketSercer } from "../server";
+import { socketServer } from "../server/index";
 import { NotFoundError, APIError } from "../util/error/errors";
 
 export default class ReviewService implements ReviewServiceInterface {
@@ -29,27 +29,36 @@ export default class ReviewService implements ReviewServiceInterface {
   async getByIDReviews(id: string, offset: number): Promise<ReviewInput[]> {
     try {
       const Reviews = await this.repo.getByID(id, offset);
-      if (!Reviews) throw new NotFoundError("ReviewCollection is not found");
+
+      if (!Reviews?.length)
+        throw new NotFoundError("ReviewCollection is not found");
       return Reviews;
     } catch (error) {
       throw error;
     }
   }
-  async addReview(id: string, data: ReviewInput): Promise<ReviewInput> {
+
+  async addReview<T extends string | ReviewInput>(
+    id: string,
+    data: T
+  ): Promise<ReviewInput> {
     try {
       const addedReview = await this.repo.update(id, data);
       if (!addedReview) throw new Error("");
-      socketSercer.socket.emit(id, { ...addedReview, remove: false });
+      socketServer.socket.emit(id, { ...addedReview, remove: false });
       return addedReview;
     } catch (error) {
       throw error;
     }
   }
-  async removeReview(id: string, data: ReviewInput): Promise<ReviewInput> {
+  async removeReview<T extends string | ReviewInput>(
+    id: string,
+    data: T
+  ): Promise<ReviewInput> {
     try {
       const removedReview = await this.repo.update(id, data, true);
       if (!removedReview) throw new Error("");
-      socketSercer.socket.emit(id, { ...removedReview, remove: true });
+      socketServer.socket.emit(id, { ...removedReview, remove: true });
       return removedReview;
     } catch (error) {
       throw error;

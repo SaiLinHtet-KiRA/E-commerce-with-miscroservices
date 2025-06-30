@@ -30,7 +30,8 @@ export default class RabbitMQ {
       }
     );
   }
-  async requestData(
+
+  private async requestData(
     RPC_QUEUE_NAME: string,
     requestPayload: RPCRequestPayload,
     uuid: string

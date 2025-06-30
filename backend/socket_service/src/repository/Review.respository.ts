@@ -18,11 +18,13 @@ export class ReviewRespository implements ReviewRespositoryInterface {
       })
     )?.reviews;
   }
-  async update(
+
+  async update<T extends string | ReviewInput>(
     id: string,
-    data: ReviewInput,
+    data: T,
     remove: boolean = false
   ): Promise<any> {
+    console.log("typeof data", typeof data);
     if (!remove) {
       return (
         await Reviews.findByIdAndUpdate(
@@ -36,7 +38,7 @@ export class ReviewRespository implements ReviewRespositoryInterface {
     } else {
       const isexist = await Reviews.exists({
         _id: id,
-        "reviews._id": data._id,
+        "reviews._id": data,
       });
 
       if (!isexist) throw new Error("This Review is not exist");
@@ -44,7 +46,7 @@ export class ReviewRespository implements ReviewRespositoryInterface {
         await Reviews.findByIdAndUpdate(
           id,
           {
-            $pull: { reviews: { _id: data._id } },
+            $pull: { reviews: { _id: data } },
           },
           { fields: { reviews: { $slice: -1 } } }
         )

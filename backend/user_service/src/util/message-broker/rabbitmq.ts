@@ -50,7 +50,6 @@ export default class RabbitMQ {
       RPC_QUEUE_NAME,
       async (msg: ConsumeMessage | null) => {
         if (msg) {
-          // DB Operation
           let response: any;
           const payload = JSON.parse(msg.content.toString());
           switch (msg.properties.headers!.toServer) {

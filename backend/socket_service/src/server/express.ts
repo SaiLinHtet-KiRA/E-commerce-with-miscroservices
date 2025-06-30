@@ -1,15 +1,29 @@
 import express, { Express } from "express";
 import ReviewRouter from "../api/Review.api";
 import { HandleErrorWithLogger } from "../util/error/handler";
-export class ExpressServer {
+import cookieSession from "cookie-session";
+import passport from "passport";
+
+const cookie = cookieSession({
+  name: "E commerce-session",
+  secret: "dadadas",
+  maxAge: 1000 * 60 * 60 * 24,
+});
+
+export default class ExpressServer {
   app: Express;
   private port: number;
+
   constructor() {
     this.app = express();
     this.port = 4001;
+
     this.startServer();
   }
+
   startServer() {
+    this.app.use(cookie);
+
     this.app.use(express.json());
     this.app.use(ReviewRouter);
     this.app.use(HandleErrorWithLogger as any);

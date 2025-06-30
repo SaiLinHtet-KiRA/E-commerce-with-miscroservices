@@ -21,7 +21,6 @@ export class ExpressServer {
   }
   serverStart() {
     this.app.use(cookie);
-    this.app.use(passport.initialize());
     this.app.use(passport.session());
 
     this.app.use(express.json());

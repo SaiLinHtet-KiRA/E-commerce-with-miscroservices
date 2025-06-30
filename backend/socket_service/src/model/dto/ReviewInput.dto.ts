@@ -1,5 +1,6 @@
 import {
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   Max,
   MaxLength,
@@ -12,7 +13,9 @@ export default class ReviewInput {
   _id?: string;
 
   @IsNotEmpty()
-  userID: string;
+  @IsNumber()
+  @Min(1)
+  userID: number;
 
   @IsNotEmpty()
   @MinLength(5)

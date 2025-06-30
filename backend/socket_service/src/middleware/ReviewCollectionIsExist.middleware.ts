@@ -1,16 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import ReviewService from "../services/Review.service";
+import { reviewService } from "../services";
 
-const service = new ReviewService();
-
-export default async function ReviewCollectionIsExist(
+export async function ReviewCollectionIsExist(
   req: Request<{ id: string }>,
   res: Response,
   next: NextFunction
 ) {
   try {
     const { id } = req.params;
-    await service.getByIDReviews(id, 1);
+    await reviewService.getByIDReviews(id, 0);
     next();
   } catch (error) {
     next(error);
